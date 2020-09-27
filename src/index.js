@@ -1,42 +1,25 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const sqlite = require('sqlite3').verbose()
-const fs = require('fs')
-
-const db = new sqlite.Database('./db.db')
+const dotenvRes = require('dotenv').config();
+dotenvRes.error ? console.warn(dotenvRes.error) : console.log('Environment variables set')
 
 const app = express();
 
 app.listen(process.env.PORT || 4040, () => {
-    console.log("Hello")
+    console.log(`Listening on port ${ process.env.PORT || 4040 }`)
 })
 
 app.use(bodyParser.json())
 
 app.get('/', (req, res) => {
-    res.send("YOLO")
+    res.send("Here is gonna be SWAGGER")
 })
 
-app.post('/new_quote', (req, res) => {
-    const postNew = fs.readFileSync('./sql/post_new.sql').toString()
-    db.run(postNew, {
-        $body: req.body.body,
-        $author: req.body.author
-    });
-    console.warn("helo")
+app.post('/date', (req, res) => {
+
+})
+
+app.get(`/HelloWorld`, (req, res) => {
     res.status(200)
-    res.send('OK')
-})
-
-app.get(`/quote`, (req, res) => {
-    const getQuoteById = fs.readFileSync('./sql/retrieve_by_id.sql').toString();
-    db.get(getQuoteById, req.headers.id, (err, row) => {
-        if (err) {
-            res.status(500)
-            res.send('Error 500')
-        } else {
-            res.status(200)
-            res.send(row)
-        }
-    })
+    res.send("Hello world!")
 })
